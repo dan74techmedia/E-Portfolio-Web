@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     try {
         // 3. Insert into Database
-        $sql = "INSERT INTO users (institution_name, teacher_name, email, phone, password) VALUES (?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO teachers(institution_name, teacher_name, email, phone, password) VALUES (?, ?, ?, ?, ?)";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([$inst, $name, $email, $phone, $hashed_pass]);
 

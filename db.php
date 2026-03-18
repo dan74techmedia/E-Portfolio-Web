@@ -1,27 +1,24 @@
 <?php
-// 1. Database details from your Neon Console
+// 1. Your Neon connection details
 $host = 'ep-shy-heart-alnkzh60-pooler.c-3.eu-central-1.aws.neon.tech';
 $db   = 'neondb';
 $user = 'neondb_owner';
-$pass = 'npg_O69odUBLsJvg'; 
-$endpoint = 'ep-shy-heart-alnkzh60'; // Your specific Endpoint ID
+$pass = 'npg_O69odUBLsJvg';
+$endpoint = 'ep-shy-heart-alnkzh60';
 
 try {
-    // 2. THE CRITICAL FIX: 
-    // We must send the endpoint ID as part of the password string 
-    // for the Pooler to authenticate correctly.
-    $final_pass = "endpoint=$endpoint;$pass";
+    // 2. THE OFFICIAL NEON FIX: 
+    // We add the endpoint ID directly into the DSN string using the 'options' parameter.
+    // This forces the server to route you correctly BEFORE it checks the password.
+    $dsn = "pgsql:host=$host;port=5432;dbname=$db;options=endpoint%3D$endpoint;sslmode=require";
 
-    // 3. Set the DSN with SSL required (Neon requirement)
-    $dsn = "pgsql:host=$host;port=5432;dbname=$db;sslmode=require";
-
-    $pdo = new PDO($dsn, $user, $final_pass);
+    // 3. Connect using just the normal password
+    $pdo = new PDO($dsn, $user, $pass);
     
-    // Set error mode so we see exactly what goes wrong later
+    // Set error mode
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 } catch (PDOException $e) {
-    // This will now show a much clearer error if it still fails
     die("The system is having trouble reaching the database. <br> Error: " . $e->getMessage());
 }
 ?>
