@@ -1,4 +1,7 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+print_r($_POST); // This will show you exactly what data is being sent
 require 'db.php'; 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
