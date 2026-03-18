@@ -1,23 +1,26 @@
 <?php
-// HARDCODED SETTINGS (Most reliable for troubleshooting)
+// 1. Define the separate parts
 $host = 'ep-shy-heart-alnkzh60-pooler.c-3.eu-central-1.aws.neon.tech';
 $db   = 'neondb';
 $user = 'neondb_owner';
-$pass = 'npg_O69odUBLsJvg'; // Your actual password
+$pass = 'npg_O69odUBLsJvg';
 $endpoint = 'ep-shy-heart-alnkzh60';
 
 try {
-    // We combine the endpoint and password here—this is what Neon REQUIRES
-    $options = [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-    ];
-    
-    // The "Endpoint Trick": We put the endpoint ID inside the password string
-    $dsn = "pgsql:host=$host;port=5432;dbname=$db;sslmode=require";
+    // 2. The "Neon Secret": We combine endpoint and password into one string
+    // This is the ONLY way the pooler recognizes your project
     $final_pass = "endpoint=$endpoint;$pass";
+    
+    // 3. Set up the connection with SSL required
+    $dsn = "pgsql:host=$host;port=5432;dbname=$db;sslmode=require";
+    
+    $pdo = new PDO($dsn, $user, $final_pass);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    $pdo = new PDO($dsn, $user, $final_pass, $options);
 } catch (PDOException $e) {
-    die("The system is having trouble reaching the database. Error: " . $e->getMessage());
+    // If it fails, this will tell us EXACTLY why
+    echo "The system is having trouble reaching the database. <br>";
+    echo "Error Details: " . $e->getMessage();
+    exit;
 }
 ?>
